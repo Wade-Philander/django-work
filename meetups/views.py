@@ -25,14 +25,18 @@ def index(request):
     meetups = Meetup.objects.all()
 
     return render(request,'meetups/index.html',{
-        'meetups': meetups
+        'meetups': meetups 
     })
 
 def meetup_details(request, meetup_slug):
-    
-    selected_meetups = {'title':'A First Meetup', 'description':'This is our first meetup!'}
-    
-    return render(request, 'meetups/meetup-detail.html',{
-        'meetup_title': selected_meetups.title,
-        'meetup_description': selected_meetups.description
-    })
+    try:
+        selected_meetups = Meetup.objects.get(slug=meetup_slug)
+
+        return render(request, 'meetups/meetup-detail.html',{
+            'meetup_title': selected_meetups.title,
+            'meetup_description': selected_meetups.description
+        })
+    except Exception as exc:
+        return render(request,'meetups/meetup-detail.html',{
+            'meetup_found': False
+        })
